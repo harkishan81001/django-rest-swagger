@@ -170,9 +170,11 @@ LOGGING = {
     }
 }
 
+API_VERSION = "0.1.10"
+
 SWAGGER_SETTINGS = {
     "exclude_namespaces": [],    # List URL namespaces to ignore
-    "api_version": '0.1.10',  # Specify your API's version (optional)
+    "api_version": API_VERSION,  # Specify your API's version (optional)
     "token_type": 'Bearer',
     "enabled_methods": [  # Methods to enable in UI
         'get',
@@ -181,6 +183,7 @@ SWAGGER_SETTINGS = {
         'patch',
         'delete'
     ],
-    "is_authenticated": False
+    "is_authenticated": False,
+    "custom_headers": {"X-API-VERSION": API_VERSION}
 }
 APPEND_SLASH = False

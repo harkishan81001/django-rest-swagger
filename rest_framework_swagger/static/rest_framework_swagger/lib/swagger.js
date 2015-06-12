@@ -87,6 +87,7 @@ var SwaggerApi = function(url, options) {
   this.authorizations = null;
   this.authorizationScheme = null;
   this.info = null;
+  this.custom_headers = url.apiCustomHeaders
 
   options = (options||{});
   if (url)
@@ -111,14 +112,18 @@ var SwaggerApi = function(url, options) {
 
 SwaggerApi.prototype.build = function() {
   var _this = this;
+  var api_headers = {accept: "application/json"}
+
+  for (var property in this.custom_headers) {
+        api_headers[property] = this.custom_headers[property]
+  }
   this.progress('fetching resource list: ' + this.url);
+
   var obj = {
     useJQuery: this.useJQuery,
     url: this.url,
     method: "get",
-    headers: {
-      accept: "application/json"
-    },
+    headers: api_headers,
     on: {
       error: function(response) {
         if (_this.url.substring(0, 4) !== 'http') {
@@ -152,6 +157,7 @@ SwaggerApi.prototype.buildFromSpec = function(response) {
   if (response.apiVersion != null) {
     this.apiVersion = response.apiVersion;
   }
+  this.apiCustomHeaders = response.apiCustomHeaders
   this.apis = {};
   this.apisArray = [];
   this.produces = response.produces;
@@ -206,6 +212,7 @@ SwaggerApi.prototype.buildFrom1_1Spec = function(response) {
   this.apis = {};
   this.apisArray = [];
   this.produces = response.produces;
+  this.apiCustomHeaders = response.apiCustomHeaders
   if (response.info != null) {
     this.info = response.info;
   }
@@ -332,6 +339,11 @@ var SwaggerResource = function(resourceObj, api) {
   this.rawModels = {};
   this.useJQuery = (typeof api.useJQuery !== 'undefined' ? api.useJQuery : null);
 
+  var api_headers = {accept: "application/json"}
+  for (var property in this.api.custom_headers) {
+    api_headers[property] = this.api.custom_headers[property]
+  }
+
   if ((resourceObj.apis != null) && (this.api.resourcePath != null)) {
     this.addApiDeclaration(resourceObj);
   } else {
@@ -348,9 +360,7 @@ var SwaggerResource = function(resourceObj, api) {
       url: this.url,
       method: "get",
       useJQuery: this.useJQuery,
-      headers: {
-        accept: "application/json"
-      },
+      headers: api_headers,
       on: {
         response: function(resp) {
           var responseObj = resp.obj || JSON.parse(resp.data);

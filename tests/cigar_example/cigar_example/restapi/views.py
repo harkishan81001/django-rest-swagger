@@ -55,15 +55,6 @@ class ArtisanCigarViewSet(viewsets.ModelViewSet):
     """
     Cigar resource.
     ---
-    get_price:
-        omit_serializer: true
-    set_price:
-        omit_serializer: true
-        parameters_strategy:
-            form: replace
-        parameters:
-            - name: price
-              type: number
     """
 
     serializer_class = CigarSerializer

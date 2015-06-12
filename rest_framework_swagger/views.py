@@ -65,10 +65,12 @@ class SwaggerUIView(View):
                 'enabled_methods': mark_safe(
                     json.dumps(rfs.SWAGGER_SETTINGS.get('enabled_methods'))),
                 'doc_expansion': rfs.SWAGGER_SETTINGS.get('doc_expansion', ''),
+                'apiCustomHeaders': json.dumps(
+                    rfs.SWAGGER_SETTINGS.get('custom_headers', {}))
             }
         }
         response = render_to_response(
-            template_name, RequestContext(request, data))
+            template_name, data, RequestContext(request))
 
         return response
 
@@ -112,6 +114,7 @@ class SwaggerResourcesView(APIDocView):
             'apiVersion': rfs.SWAGGER_SETTINGS.get('api_version', ''),
             'swaggerVersion': '1.2',
             'basePath': self.get_base_path(),
+            'apiCustomHeaders': rfs.SWAGGER_SETTINGS.get('custom_headers', {}),
             'apis': apis,
             'info': rfs.SWAGGER_SETTINGS.get('info', {
                 'contact': '',
@@ -155,6 +158,7 @@ class SwaggerApiView(APIDocView):
             'swaggerVersion': '1.2',
             'basePath': self.api_full_uri.rstrip('/'),
             'resourcePath': '/' + path,
+            'apiCustomHeaders': rfs.SWAGGER_SETTINGS.get('custom_headers', {}),
             'apis': generator.generate(apis),
             'models': generator.get_models(apis),
         })

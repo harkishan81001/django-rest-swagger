@@ -67,6 +67,7 @@
                     url: '{{ swagger_settings.discovery_url }}',
                     apiKey: '{{ swagger_settings.api_key }}',
                     dom_id: 'swagger-ui-container',
+                    apiCustomHeaders: {{ swagger_settings.apiCustomHeaders|safe }},
                     supportedSubmitMethods: {{ swagger_settings.enabled_methods }},
                     onComplete: function (swaggerApi, swaggerUi){
                         log('Loaded SwaggerUI')
